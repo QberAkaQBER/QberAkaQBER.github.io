@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fumo Shop</title>
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <script src="js/main.js"></script>
+        
+
+        
+
+</head>
+<body>
+    <video autoplay loop muted playsinline id="background-video">
+        <source src="img/fumovideo.mkv" type="video/mp4">
+        Ваш браузер не поддерживает видео.
+    </video>
+    <div class="header">
+        <div class="title">ФУМО-ФУМО
+	</div>
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="поиск...">
+	    <a href='whatfumo.html' class='about-button'>Фумо?</a>
+        </div>
+    </div>
+    <div class="container" id="product-container">
+    </div>
+    
+    <div class="cart" id="cart">
+        <h2>Корзина</h2>
+        <div id="cart-items"></div>
+        <div class="cart-total" id="cart-total">Total: $0</div>
+        <button class="button2"> купи купи купи </button>
+    </div>
+
+    <div class="contact">
+        <h2>Свяжитесь с нами</h2>
+        <p>Тел: +7 (322) 222-3346</p>
+        <p>Тел: +7 (705) 322-3344</p>
+        <p>Тел: +7 (555) 123-4567</p><br>
+	<h2>Полезные ссылки</h2>
+	<p><a href='https://fumo.website/'> фумо! </a></p>
+	<p><a href='https://www.amiami.com/eng/ranking/'> Амиами </a></p>
+    </div>
+
+    <script>
+        const products = [
+            { name: "Рейму", price: 20, image: "img/001.jpg" },
+            { name: "Мариса", price: 25, image: "img/002.jpg" },
+            { name: "Юка", price: 20, image: "img/003.jpg" },
+            { name: "Сакуя", price: 20, image: "img/004.jpg" },
+            { name: "Ремилия", price: 20, image: "img/005.jpg" },
+            { name: "Пачули", price: 20, image: "img/006.jpg" },
+            { name: "Алиса", price: 20, image: "img/007.jpg" },
+            { name: "Фландр", price: 20, image: "img/008.jpg" },
+            { name: "Ая", price: 20, image: "img/009.jpg" },
+            { name: "Теви", price: 20, image: "img/010.jpg" },
+            { name: "Рейсен", price: 20, image: "img/011.jpg" },
+            { name: "Коиши", price: 20, image: "img/012.jpg" },
+            { name: "Санае", price: 20, image: "img/013.jpg" },
+            { name: "Чирно бака!", price: 20, image: "img/014.jpg" },
+            { name: "Сувако", price: 20, image: "img/015.jpg" },
+            { name: "Комеджи", price: 30, image: "img/016.jpg" }
+        ];
+
+        const container = document.getElementById('product-container');
+        const searchInput = document.getElementById('search-input');
+
+        const cart = [];
+        const cartItemsContainer = document.getElementById('cart-items');
+        const cartTotal = document.getElementById('cart-total');
+
+        function displayProducts(filteredProducts) {
+            container.innerHTML = '';
+            filteredProducts.forEach(product => {
+                const productElement = document.createElement('div');
+                productElement.classList.add('product');
+                productElement.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}">
+                    <div class="product-name">${product.name}</div>
+                    <div class="product-price">$${product.price}</div>
+                    <button class="buy-button" data-name="${product.name}" data-price="${product.price}">Buy</button>
+                `;
+                container.appendChild(productElement);
+            });
+
+            document.querySelectorAll('.buy-button').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const name = event.target.getAttribute('data-name');
+                    const price = parseFloat(event.target.getAttribute('data-price'));
+                    const existingItem = cart.find(item => item.name === name);
+
+                    if (existingItem) {
+                        existingItem.quantity++;
+                    } else {
+                        cart.push({ name, price, quantity: 1 });
+                    }
+
+                    updateCart();
+                });
+            });
+        }
+
+        searchInput.addEventListener('input', () => {
+            const searchTerm = searchInput.value.toLowerCase();
+            const filteredProducts = products.filter(product =>
+                product.name.toLowerCase().includes(searchTerm)
+            );
+            displayProducts(filteredProducts);
+        });
+
+        function updateCart() {
+            cartItemsContainer.innerHTML = '';
+            let total = 0;
+
+            cart.forEach(item => {
+                const cartItem = document.createElement('div');
+                cartItem.classList.add('cart-item');
+                cartItem.innerHTML = `
+                    <span>${item.name} - $${item.price}</span>
+                    <span> Количество: ${item.quantity}</span>
+                `;
+                cartItemsContainer.appendChild(cartItem);
+                total += item.price * item.quantity;
+            });
+
+            cartTotal.textContent = `Много-много фумо всего за: $${total}`;
+            
+        }
+        
+
+        
+
+        displayProducts(products);
+    </script>
+</body>
+</html>
